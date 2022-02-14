@@ -28,9 +28,19 @@ Afterwards, some of the small hole on the surface of the mesh is closed then aga
 Later, the mesh is smoothed with laplacian smoothing and again for the last time, non-manifold geometry and t-vertices are removed. 
 Finally, the last process will be texture mapping which gives the mesh a realistic texture-look.  
 
+<br clear="left"/>
+
 # System Architecture
 <img align="left" src="images/system_architecture.png" alt="system architecture" width="40%"/>
 On the frontend, it is a website built using ReactJS while on the backend, it uses FastAPI to create an API run on the free Google Colab resources such as GPU and CPU. 
 GPU is used on the execution of the 3D Model Reconstruction Pipeline and CPU is used to host the static asset such as 3D model and images. 
 The database that the system will be using is Google Drive. Google drive will be tasked to store the static assets and other intermediate result from the reconstruction.
 
+<br clear="left"/>
+
+# Folder Structure
+`notebook` 
+- 3D_Model_Reconstruction_Pipeline.ipynb
+```This is where all the algorithms code are placed```
+- Backend_Util.ipynb
+```This is where the utils function related to the interaction betweeen frontend and backend code are placed such as uploading images to the cloud```
