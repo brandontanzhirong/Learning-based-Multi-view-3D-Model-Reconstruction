@@ -1,70 +1,36 @@
-# Getting Started with Create React App
+# 3D Model Reconstruction
+## Pre-processing
+<img align="left" src="images/pre-processing.png" alt="pre-processing" width="25%"/>
+In this phase, images will be pre-processed by removing the JPEG artifact from the image file as images taken from a phone camera are JPEG file. JPEG artifact is a result from the way data is compressed by the JPEG algorithm. To achieve this, FBCNN, a state of the art convolutional neural network is used. 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<br clear="left"/>
 
-## Available Scripts
+## Main Algorithm
+<img align="left" src="images/main_algorithm.png" alt="main_algorithm" width="40%"/>
+After that, features are detected and matched from the preprocessed images with the use of deep learning, SuperPoint and SuperGlue. 
+Next, incremental structure from motion algorithm is performed with the COLMAP implementation. 
+In the next step, multi view stereo algorithm is conducted by estimating the depth map of each images and fuse together. 
+As you can see, there are 2 options of Multi view stereo algorithm to choose from. 
+Option A is a non-deep learning method which uses the COLMAP implementation whereas option B is a deep learning method which uses Vis-MVSNet. There is a tradeoff between completeness and speed of execution between these 2 options. 
+Option A offers a more complete and accurate point cloud whereas option B offers 3 times faster execution of the algorithm. If the user want to have a 3D model in a short amount of time under certain scenario, user can choose option B but with a tradeoff of the quality of the 3D model.
 
-In the project directory, you can run:
+<br clear="left"/>
 
-### `npm start`
+## Post-processing
+<img align="left" src="images/post-processing.png" alt="post-processing" width="40%"/>
+Once the point cloud is generated, the point cloud is simplified to reduce the number of points using the pyMeshLab implementation. 
+After that, outliers are removed from the simplified point cloud using radius outlier removal algorithm. 
+Next, Poisson Surface Reconstruction is used to generate mesh from the point cloud. 
+Later, small disconnected mesh will be removed. 
+Then, quadric edge collapse decimation is used to reduce the number of faces on the mesh. 
+After that, non-manifold geometry and T-vertices are removed from the mesh. 
+Afterwards, some of the small hole on the surface of the mesh is closed then again non-manifold geometry and T-vertices are removed. 
+Later, the mesh is smoothed with laplacian smoothing and again for the last time, non-manifold geometry and t-vertices are removed. 
+Finally, the last process will be texture mapping which gives the mesh a realistic texture-look.  
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+# System Architecture
+<img align="left" src="images/system_architecture.png" alt="system architecture" width="40%"/>
+On the frontend, it is a website built using ReactJS while on the backend, it uses FastAPI to create an API run on the free Google Colab resources such as GPU and CPU. 
+GPU is used on the execution of the 3D Model Reconstruction Pipeline and CPU is used to host the static asset such as 3D model and images. 
+The database that the system will be using is Google Drive. Google drive will be tasked to store the static assets and other intermediate result from the reconstruction.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
